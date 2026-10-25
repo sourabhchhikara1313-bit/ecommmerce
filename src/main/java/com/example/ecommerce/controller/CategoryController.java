@@ -1,0 +1,50 @@
+package com.example.ecommerce.controller;
+
+import com.example.ecommerce.dto.CategoryRequest;
+import com.example.ecommerce.dto.CategoryResponse;
+import com.example.ecommerce.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(name = "Categories")
+@RestController
+@RequestMapping("/categories")
+public class CategoryController {
+
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    @GetMapping
+    public List<CategoryResponse> getAll() {
+        return categoryService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public CategoryResponse getById(@PathVariable Long id) {
+        return categoryService.findById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    public CategoryResponse update(@PathVariable Long id, @Valid @RequestBody CategoryRequest request) {
+        return categoryService.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
